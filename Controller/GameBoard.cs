@@ -1,9 +1,19 @@
-﻿using System;
+﻿using Minesweeper;
+using System;
 using System.Diagnostics;
+using System.Windows;
 
 public class GameBoard
 {
-    private MainWindow _mainWindow;
+
+    //Delegates and events
+    public event Action<double> TimeUpdated;
+    public event Action<int[,]> GridUpdated;
+    public event Action GameWon;
+    public event Action GameLost;
+
+
+    private Window _window;
     private int[,] _grid;
     private int _amountOfMines;
     private int _amountOfRevealedCells;
@@ -21,15 +31,22 @@ public class GameBoard
         Hard
     }
 
-    public GameBoard(MainWindow mainWindow, DifficultyLevel difficultyLevel)
+    public GameBoard(Window window, DifficultyLevel difficultyLevel)
     {
-        _mainWindow = mainWindow;
+        _window = window;
         _amountOfRevealedCells = 0;
         _timeElapsed = 0;
         _isRunning = false;
         _difficultyLevel = difficultyLevel;
         SetDifficulty(difficultyLevel);
-
+    }
+    public GameBoard(DifficultyLevel difficultyLevel)
+    {
+        _amountOfRevealedCells = 0;
+        _timeElapsed = 0;
+        _isRunning = false;
+        _difficultyLevel = difficultyLevel;
+        SetDifficulty(difficultyLevel);
     }
 
     public void RevealCell()
@@ -72,29 +89,6 @@ public class GameBoard
         // Reset the grid and other game state variables
     }
 
-    public void UpdateTimeElapsed()
-    {
-        if (_isRunning)
-        {
-            _timeElapsed = _stopWatch.Elapsed.TotalSeconds;
-            _mainWindow.UpdateTimeDisplay(_timeElapsed); // Assuming MainWindow has a method to update the display
-        }
-    }
-
-    public void UpdateGridDisplay()
-    {
-        _mainWindow.UpdateGrid(_grid); // Assuming MainWindow has a method to update the grid display
-    }
-
-    public void CheckWinCondition()
-    {
-        if (_amountOfRevealedCells + _amountOfMines == _amountOfRows * _amountOfColumns)
-        {
-            EndGame();
-            _mainWindow.ShowWinMessage(); // Assuming MainWindow has a method to show a win message
-        }
-    }
-
     public void SetDifficulty(DifficultyLevel difficulty)
     {
         switch (difficulty)
@@ -117,23 +111,21 @@ public class GameBoard
         }
         _difficultyLevel = difficulty;
     }
-}
 
-// You'll need to define this class somewhere in your project
-public class MainWindow
-{
-    public void UpdateTimeDisplay(double timeElapsed)
+
+    //Delegate methods to update UI
+    private void OnTimeUpdated(double time)
     {
-        // Implementation
+        TimeUpdated?.Invoke(time);
     }
 
-    public void UpdateGrid(int[,] grid)
+    private void OnGridUpdated(int[,] grid)
     {
-        // Implementation
+        GridUpdated?.Invoke(grid);
     }
 
-    public void ShowWinMessage()
+    private void OnGameWon()
     {
-        // Implementation
+        GameWon?.Invoke();
     }
 }
