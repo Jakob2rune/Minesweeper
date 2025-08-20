@@ -1,4 +1,5 @@
-﻿using System.Configuration;
+﻿using Minesweeper.Controller;
+using System.Configuration;
 using System.Data;
 using System.Windows;
 
@@ -14,15 +15,13 @@ namespace Minesweeper
         {
             base.OnStartup(e);
 
-            MainWindow mainView = new MainWindow();
-            // Create the controller and pass it the view it will control
-            Gameboard gameController = new Gameboard(mainView);
-
-            mainView.Show(); // The controller is now in charge of the view.
-
-            // You might also need to pass the controller to the view if
-            // view events (like button clicks) need to call it.
-            // mainView.GameController = gameController;
+            MainWindow mainWindow = new MainWindow();
+            mainWindow.Title = "Minesweeper Game Menu";
+            mainWindow.Width = 800;
+            mainWindow.Height = 600;
+            mainWindow.WindowStartupLocation = WindowStartupLocation.CenterScreen;
+            mainWindow.Content = "Welcome to Minesweeper! Please select a difficulty level to start the game.";
+            mainWindow.Show();
         }
     }
 
