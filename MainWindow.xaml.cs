@@ -21,7 +21,7 @@ namespace Minesweeper
         {
             InitializeComponent();
             Debug.WriteLine("Hello World");
-
+            
             Debug.WriteLine("This is a test of the Debug.WriteLine method.");
         }
     }
